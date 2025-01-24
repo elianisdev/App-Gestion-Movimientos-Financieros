@@ -1,11 +1,16 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}", // Archivos que Tailwind procesará
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Roboto', 'ui-sans-serif', 'system-ui'],
+        serif: ['Georgia', 'ui-serif', 'serif'],
+        mono: ['Menlo', 'ui-monospace', 'monospace'],
+      },
+    },
   },
   plugins: [],
 };
