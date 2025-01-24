@@ -1,7 +1,7 @@
 import {FC} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import { useForm } from "react-hook-form";
-import {LoginService} from "../../services/Auth.ts"
+import {login} from "../../services/Auth.ts"
 import {  toast } from 'react-toastify';
 
 interface LoginFormData {
@@ -16,9 +16,9 @@ const Login: FC = () => {
 
     const onSubmit = async (data: LoginFormData) => {
 
-        const response = await LoginService( data.email, data.password );
+        const response = await login( data.email, data.password );
         if (response.statusCode === 200) {
-            toast("Has ingresado correctamente!", { type: "success" });
+            toast(response.message, { type: "success" });
             localStorage.setItem("user", JSON.stringify(response));
             navigate("/home");
         } else {

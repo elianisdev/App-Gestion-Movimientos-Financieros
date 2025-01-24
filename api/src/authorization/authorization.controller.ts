@@ -11,6 +11,7 @@ import { AuthorizationService } from './authorization.service';
 import { CreateAuthorizationDto } from './dto/create-authorization.dto';
 import { UpdateAuthorizationDto } from './dto/update-authorization.dto';
 import { LoginAuthorizationDto } from './dto/login-authorization.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('authorization')
 export class AuthorizationController {
@@ -31,9 +32,10 @@ export class AuthorizationController {
     return this.authorizationService.findAll();
   }
 
-  @Get(':id')
+  @Get('getUser/:id')
+  @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
-    return this.authorizationService.findOne(+id);
+    return this.authorizationService.findOne(id);
   }
 
   @Patch(':id')

@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import { RegisterService } from "../../services/Auth.ts";
+import { userRegister } from "../../services/Auth.ts";
 import { toast } from 'react-toastify';
 import {useNavigate} from "react-router-dom";
 
@@ -17,7 +17,7 @@ export const Register: FC = () => {
     const navigate = useNavigate();
 
     const onSubmit = async (data: RegisterFormData) => {
-        const response = await RegisterService(data.email, data.password, data.name, data.lastName, data.avatarUrl);
+        const response = await userRegister(data.email, data.password, data.name, data.lastName, data.avatarUrl);
         if (response.statusCode === 201) {
             toast(response.message, { type: "success" });
             toLogin();

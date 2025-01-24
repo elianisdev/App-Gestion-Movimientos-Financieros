@@ -19,6 +19,7 @@ const Home: FC = () => {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMovement, setSelectedMovement] = useState<Movement | null>(null);
+    const [user, setUser] = useState(localStorage.getItem("user"));
 
     const username = "Usuario";
     const movements: Movement[] = [

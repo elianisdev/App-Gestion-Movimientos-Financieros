@@ -23,7 +23,7 @@ export class AuthorizationService {
       const { password, ...userWithoutPassword } = user.toObject();
       return {
         statusCode: HttpStatus.OK,
-        message: 'User authenticated successfully',
+        message: 'Has ingresado correctamente!',
         access_token: this.jwtService.sign(payload),
         user: userWithoutPassword,
       };
@@ -56,12 +56,12 @@ export class AuthorizationService {
     };
   }
 
-  findAll() {
-    return `This action returns all authorization`;
+  async findOne(id: string): Promise<User | null> {
+    return this.userModel.findById(id).select('-password').exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} authorization`;
+  findAll() {
+    return `This action returns all authorization`;
   }
 
   update(id: number, _updateAuthorizationDto: UpdateAuthorizationDto) {
