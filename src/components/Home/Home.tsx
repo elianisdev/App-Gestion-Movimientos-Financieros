@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import {FC, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import avatarUrl from "../../assets/react.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,7 +15,7 @@ interface Movement {
     description: string;
 }
 
-const Home: React.FC = () => {
+const Home: FC = () => {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMovement, setSelectedMovement] = useState<Movement | null>(null);
@@ -48,9 +48,14 @@ const Home: React.FC = () => {
         setIsModalOpen(false);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("access_token");
+        navigate("/");
+    };
+
     return (
         <div className=" flex justify-center items-start min-h-screen bg-gray-100 ">
-        <div className="p-4 bg-white">
+        <div className="p-8 bg-white">
             <header className="flex flex-col justify-center items-center mb-4">
                 <div className="flex items-center">
                     <img src={avatarUrl} alt="Avatar" className="w-12 h-12 rounded-full mr-4" />
@@ -106,6 +111,15 @@ const Home: React.FC = () => {
                 onClose={() => setIsModalOpen(false)}
                 onConfirm={handleConfirmDelete}
             />
+
+            <div className="w-full flex justify-center">
+                <button
+                    onClick={handleLogout}
+                    className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                >
+                    Cerrar Sesión
+                </button>
+            </div>
         </div>
         </div>
     );

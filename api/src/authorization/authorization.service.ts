@@ -20,13 +20,15 @@ export class AuthorizationService {
     const user = await this.userModel.findOne({ email });
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload = { email: user.email, sub: user._id };
+      const { password, ...userWithoutPassword } = user.toObject();
       return {
         statusCode: HttpStatus.OK,
         message: 'User authenticated successfully',
         access_token: this.jwtService.sign(payload),
+        user: userWithoutPassword,
       };
     }
-    throw new Error('Invalid credentials');
+    throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
   }
 
   async create(createAuthorizationDto: CreateAuthorizationDto) {
@@ -34,7 +36,10 @@ export class AuthorizationService {
       createAuthorizationDto;
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser) {
-      throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'El usuario ya se encuentra registrado!',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new this.userModel({
@@ -46,7 +51,7 @@ export class AuthorizationService {
     });
     return {
       statusCode: HttpStatus.CREATED,
-      message: 'User created successfully',
+      message: 'Usuario registrado correctamente!',
       data: newUser.save(),
     };
   }
@@ -59,7 +64,7 @@ export class AuthorizationService {
     return `This action returns a #${id} authorization`;
   }
 
-  update(id: number, updateAuthorizationDto: UpdateAuthorizationDto) {
+  update(id: number, _updateAuthorizationDto: UpdateAuthorizationDto) {
     return `This action updates a #${id} authorization`;
   }
 
