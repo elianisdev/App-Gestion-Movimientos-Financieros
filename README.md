@@ -61,6 +61,12 @@ La aplicación de gestión financiera permite a los usuarios:
 
 El frontend está construido con React y utiliza TailwindCSS para el diseño. El backend está construido con NestJS y proporciona una API REST para gestionar los datos de los usuarios y sus movimientos financieros.
 
+En caso de omitir el registro de un nuevo usuario, por defecto la aplicación ya cuenta con un usuario de prueba con las siguientes credenciales:
+
+```bash
+- Email: prueba-financiera@mail.com
+- Contraseña: 123456
+```
 ### Build
 
 Para construir la aplicación tanto frontend como api, ejecuta el siguiente comando en la carpeta raíz del proyecto:

@@ -102,7 +102,8 @@ const Home: FC = () => {
                 <header className="flex flex-col justify-center items-center mb-4">
                     <div className="flex items-center py-4">
                         <img src={user?.avatarUrl} alt="Avatar" className="rounded-full mr-2" style={{
-                            height: '90px'
+                            height: '75px',
+                            width: '75px'
                         }}/>
                         <div className="flex flex-col">
                             <h3 className="text-lag text-slate-700 font-bold ">Capital actual</h3>
