@@ -1,8 +1,8 @@
 {
-  "name": "api",
+  "name": "api-gestion-financiera",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Api para gestion financiera",
+  "author": "Eliana Suancha",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

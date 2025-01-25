@@ -1,50 +1,82 @@
-# React + TypeScript + Vite
+# Gestión Financiera
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Esta aplicación de gestión financiera permite a los usuarios gestionar sus movimientos financieros. La aplicación está construida con React para el frontend y NestJS para el backend.
+Todo encapsulado en un solo repositorio.
 
-Currently, two official plugins are available:
+## Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js (versión 23 o superior)
+- npm (versión 10 o superior)
 
-## Expanding the ESLint configuration
+## Instalación de dependencias
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Para instalar las dependencias del proyecto, ejecuta los siguientes comandos en las carpetas correspondientes:
 
-- Configure the top-level `parserOptions` property like this:
+### Frontend (React)
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
+```
+### Backend (NestJS)
+
+```bash
+cd api
+npm install
+```
+### Iniciar los servidores en local
+
+#### Frontend (React)
+
+Para iniciar el servidor de desarrollo de React, ejecuta el siguiente comando sobre el directorio raíz del proyecto:
+
+```bash
+npm run dev
+```
+El servidor de desarrollo estará disponible en http://localhost:5173.
+
+#### Backend (NestJS)
+
+Para iniciar el servidor de desarrollo de NestJS, ejecuta el siguiente comando sobre el directorio raíz del proyecto:
+
+```bash 
+cd api
+npm run start:dev
+```
+El servidor de desarrollo estará disponible en http://localhost:3001.
+
+### Configuración de la base de datos
+
+La aplicación utiliza una base de datos MongoDB que se aloja en una cuenta de MongoCloud Atlas para almacenar los datos de los usuarios y sus movimientos financieros.
+La configuración de conexion a la base de datos se encuentra directamente en el código fuente de la aplicación: [api/src/app.module.ts](api/src/app.module.ts).
+
+### Breve explicación de la aplicación
+
+La aplicación de gestión financiera permite a los usuarios:  
+
+- Registrarse e iniciar sesión.
+- Ver su capital actual.
+- Añadir y eliminar movimientos financieros (ingresos y egresos).
+- Ver una lista de todos sus movimientos financieros.
+- Cerrar sesión.
+
+El frontend está construido con React y utiliza TailwindCSS para el diseño. El backend está construido con NestJS y proporciona una API REST para gestionar los datos de los usuarios y sus movimientos financieros.
+
+### Build
+
+Para construir la aplicación tanto frontend como api, ejecuta el siguiente comando en la carpeta raíz del proyecto:
+
+```bash
+npm run build
+cd api
+npm run build
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Autor
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- [Eliana Suancha Guzman](https://github.com/elianisdev)
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Licencia
+
+MIT
+
+

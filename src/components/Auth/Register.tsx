@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import { RegisterService } from "../../services/Auth.ts";
+import { userRegister } from "../../services/Auth.ts";
 import { toast } from 'react-toastify';
 import {useNavigate} from "react-router-dom";
 
@@ -17,7 +17,7 @@ export const Register: FC = () => {
     const navigate = useNavigate();
 
     const onSubmit = async (data: RegisterFormData) => {
-        const response = await RegisterService(data.email, data.password, data.name, data.lastName, data.avatarUrl);
+        const response = await userRegister(data.email, data.password, data.name, data.lastName, data.avatarUrl);
         if (response.statusCode === 201) {
             toast(response.message, { type: "success" });
             toLogin();
@@ -50,7 +50,7 @@ export const Register: FC = () => {
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div className="py-1">
+                    <div className="mb-2">
                         <input
                             type="text"
                             placeholder="Nombre"
@@ -64,7 +64,7 @@ export const Register: FC = () => {
                         )}
                     </div>
 
-                    <div className="py-1">
+                    <div className="mb-2">
                         <input
                             type="text"
                             placeholder="Apellido"
@@ -78,7 +78,7 @@ export const Register: FC = () => {
                         )}
                     </div>
 
-                    <div className="py-1">
+                    <div className="mb-2">
                         <input
                             type="email"
                             placeholder="Email"
@@ -95,7 +95,7 @@ export const Register: FC = () => {
                         )}
                     </div>
 
-                    <div className="py-1">
+                    <div className="mb-2">
                         <input
                             type="password"
                             placeholder="Contraseña"
@@ -109,7 +109,7 @@ export const Register: FC = () => {
                         )}
                     </div>
 
-                    <div className="py-1">
+                    <div className="mb-2">
                         <input
                             type="text"
                             placeholder="URL del avatar"
@@ -118,19 +118,27 @@ export const Register: FC = () => {
                         />
                     </div>
 
-                    <button
-                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        type="submit"
-                    >
-                        Registrar
-                    </button>
-                    <button
-                        className="w-full bg-gray-300 text-white py-2 rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                        type="button"
-                        onClick={toLogin}
-                    >
-                        Cancelar
-                    </button>
+                    <div className="py-2 flex justify-center">
+
+                        <button
+                            className="bg-gray-300 text-white py-2 px-4 rounded cursor-pointer mr-2 text-sm
+                        hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                            type="button"
+                            onClick={toLogin}
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            className="bg-blue-500 text-white py-2 px-4 rounded cursor-pointer text-sm
+                        hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            type="submit"
+                        >
+                            Registrar
+                        </button>
+
+                    </div>
+
                 </form>
             </div>
         </div>

@@ -10,6 +10,9 @@ export type MovementDocument = Movement & Document;
 })
 export class Movement {
   @Prop({ required: true })
+  userId: string;
+
+  @Prop({ required: true })
   type: 'Ingreso' | 'Egreso';
 
   @Prop({ required: true })
@@ -18,7 +21,7 @@ export class Movement {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ default: new Date() })
+  @Prop({ default: Date.now })
   date: Date;
 }
 

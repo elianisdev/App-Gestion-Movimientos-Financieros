@@ -1,31 +1,33 @@
-import {BASE_URL} from "../constants/constants.ts";
+import { BASE_URL } from "../constants/constants.ts";
+import fetchClient from './FetchClient.ts';
 
 const API_URL = `${BASE_URL}/authorization`;
 
-export const RegisterService = async (
-    email: string,
-    password: string,
-    name: string,
-    lastName: string,
-    avatarUrl: string
+export const userRegister = async (
+  email: string,
+  password: string,
+  name: string,
+  lastName: string,
+  avatarUrl: string
 ) => {
-    const response = await fetch(`${API_URL}/register`, {
+    const response = await fetchClient(`${API_URL}/register`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
         body: JSON.stringify({ email, password, name, lastName, avatarUrl })
     });
     return response.json();
 }
 
-export const LoginService = async (email: string, password: string) => {
-    const response = await fetch(`${API_URL}/login`, {
+export const login = async (email: string, password: string) => {
+    const response = await fetchClient(`${API_URL}/login`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
         body: JSON.stringify({ email, password })
+    });
+    return response.json();
+}
+
+export const getUser = async () => {
+    const response = await fetchClient(`${API_URL}/getUser`, {
+        method: 'GET'
     });
     return response.json();
 }
