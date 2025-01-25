@@ -26,7 +26,7 @@ export const login = async (email: string, password: string) => {
 }
 
 export const getUser = async () => {
-    const response = await fetchClient(`${API_URL}`, {
+    const response = await fetchClient(`${API_URL}/getUser`, {
         method: 'GET'
     });
     return response.json();

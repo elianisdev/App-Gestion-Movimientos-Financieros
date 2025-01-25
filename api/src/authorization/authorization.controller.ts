@@ -1,17 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { CreateAuthorizationDto } from './dto/create-authorization.dto';
-import { UpdateAuthorizationDto } from './dto/update-authorization.dto';
 import { LoginAuthorizationDto } from './dto/login-authorization.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('authorization')
 export class AuthorizationController {
@@ -27,27 +19,10 @@ export class AuthorizationController {
     return this.authorizationService.create(createAuthorizationDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authorizationService.findAll();
-  }
-
-  @Get('getUser/:id')
+  @Get('getUser')
   @UseGuards(JwtAuthGuard)
-  findOne(@Param('id') id: string) {
-    return this.authorizationService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateAuthorizationDto: UpdateAuthorizationDto,
-  ) {
-    return this.authorizationService.update(+id, updateAuthorizationDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authorizationService.remove(+id);
+  getUser(@Req() request: Request) {
+    const token = request.headers?.authorization?.split(' ')[1] as string;
+    return this.authorizationService.getUser(token);
   }
 }

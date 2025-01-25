@@ -1,12 +1,12 @@
-import React from "react";
+import {FC} from "react";
 
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm: () => void;
+    onDelete: () => void;
 }
 
-const DeleteMovement: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm }) => {
+const DeleteMovement: FC<ModalProps> = ({ isOpen, onClose, onDelete }) => {
     if (!isOpen) return null;
 
     return (
@@ -17,13 +17,13 @@ const DeleteMovement: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm }) =>
                 <div className="flex justify-between">
                     <button
                         onClick={onClose}
-                        className="w-1/2 py-2 mr-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                        className="w-1/2 py-2 text-sm mr-2 bg-gray-300 text-white rounded hover:bg-gray-400 cursor-pointer"
                     >
                         Cancelar
                     </button>
                     <button
-                        onClick={onConfirm}
-                        className="w-1/2 py-2 ml-2 bg-red-500 text-white rounded hover:bg-red-600"
+                        onClick={onDelete}
+                        className="w-1/2 py-2 text-sm ml-2 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer"
                     >
                         Eliminar
                     </button>

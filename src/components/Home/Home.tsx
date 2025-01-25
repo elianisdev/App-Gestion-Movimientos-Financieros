@@ -1,50 +1,93 @@
-import {FC, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import avatarUrl from "../../assets/react.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import DeleteMovement from "../DeleteMovement/DeleteMovement.tsx";
 import numeral from 'numeral';
+import moment from 'moment';
+import {getUser} from "../../services/Auth.ts";
+import {deleteMovement, getCapital, getMovements} from "../../services/Movement.ts";
+import {toast} from "react-toastify";
 
 
 interface Movement {
-    id: string;
+    _id: string;
     date: string;
     type: string;
-    value: number;
+    amount: number;
     description: string;
+}
+
+interface User {
+    id: string;
+    name: string;
+    lastName: string;
+    email: string;
+    avatarUrl: string;
+    amount: number;
 }
 
 const Home: FC = () => {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMovement, setSelectedMovement] = useState<Movement | null>(null);
-    const [user, setUser] = useState(localStorage.getItem("user"));
+    const [user, setUser] = useState<User>();
+    const [capitalAmount, setCapitalAmount] = useState('0');
+    const [movements, setMovements] = useState<Movement[]>([]);
 
-    const username = "Usuario";
-    const movements: Movement[] = [
-        { id: "1", date: "2021-10-01", type: "Ingreso", value: 100, description: "Ingreso de prueba" },
-        { id: "2", date: "2021-10-02", type: "Egreso", value: 50, description: "Egreso de prueba" },
-        { id: "3", date: "2021-10-03", type: "Ingreso", value: 200, description: "Ingreso de prueba" },
-        { id: "4", date: "2021-10-04", type: "Egreso", value: 150, description: "Egreso de prueba" },
-        { id: "5", date: "2021-10-04", type: "Egreso", value: 150, description: "Egreso de prueba" },
-        { id: "6", date: "2021-10-04", type: "Egreso", value: 150, description: "Egreso de prueba" },
-        { id: "7", date: "2021-10-04", type: "Egreso", value: 150, description: "Egreso de prueba" },
-        { id: "8", date: "2021-10-04", type: "Egreso", value: 150, description: "Egreso de prueba" },
-        { id: "9", date: "2021-10-04", type: "Egreso", value: 150, description: "Egreso de prueba" },
-    ];
-    const amount = 2000;
-    const formattedAmount = numeral(amount).format('0,0.00 €');
-    console.log(formattedAmount);
+    const getSessionUser = async () => {
+            const response = await getUser();
+            if (response.statusCode === 200) {
+                setUser(response.user);
+            } else {
+                navigate("/");
+            }
+    };
+
+    const getCapitalUser = async () => {
+        const response = await getCapital();
+        if (response.statusCode === 200) {
+            setCapitalAmount(numeral(response.capital).format('0,0'));
+        } else {
+            navigate("/");
+        }
+    }
+
+    const getMovementsUser = async () => {
+        const response = await getMovements();
+        if (response.statusCode === 200) {
+            setMovements(response.movements);
+        } else {
+            navigate("/");
+        }
+    }
+
+    useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            navigate("/");
+        }
+        getSessionUser();
+        getCapitalUser();
+        getMovementsUser();
+    }, []);
 
     const handleDeleteClick = (movement: Movement) => {
         setSelectedMovement(movement);
         setIsModalOpen(true);
     };
 
-    const handleConfirmDelete = () => {
+    const handleConfirmDelete = async () => {
         if (selectedMovement) {
-            console.log(`Deleting movement with id: ${selectedMovement.id}`);
+            const response = await deleteMovement(selectedMovement._id);
+            if (response.statusCode === 200) {
+                toast(response.message, {type: "success"});
+                await getCapitalUser();
+                await getMovementsUser();
+                setIsModalOpen(false);
+            } else {
+                toast(response.message || 'Error al eliminar el movimiento, intentalo mas tarde', {type: "error"});
+            }
         }
         setIsModalOpen(false);
     };
@@ -58,46 +101,51 @@ const Home: FC = () => {
         <div className=" flex justify-center items-start min-h-screen bg-gray-100 ">
         <div className="p-8 bg-white">
             <header className="flex flex-col justify-center items-center mb-4">
-                <div className="flex items-center">
-                    <img src={avatarUrl} alt="Avatar" className="w-12 h-12 rounded-full mr-4" />
-                    <p className="text-sm text-gray-600">capital actual<br />${amount}</p>
+                <div className="flex items-center py-4">
+                    <img src={user?.avatarUrl} alt="Avatar" className="rounded-full mr-2" style={{
+                        height: '90px'
+                    }}/>
+                    <div className="flex flex-col">
+                        <h3 className="text-lag text-slate-700 font-bold ">Capital actual</h3>
+                        <p className="text-lg text-gray-600">€ {capitalAmount}</p>
+                    </div>
                 </div>
                 <div className="flex items-center">
-                    <p className="text-lg font-bold">{username}</p>
+                    <p className="text-lg font-semibold text-gray-800">{user?.name} {user?.lastName}</p>
                 </div>
             </header>
 
             <div className="mb-4 flex justify-between">
-                <h2 className="text-lg font-bold mb-4">Mis Movimientos</h2>
+                <h2 className="text-lg font-bold text-slate-600">Mis Movimientos</h2>
                 <button
                     onClick={() => navigate("/add")}
-                    className="bg-blue-500 text-white py-1 px-2 text-sm rounded hover:bg-blue-600"
+                    className="bg-blue-500 text-white p-2 text-sm rounded hover:bg-blue-600 cursor-pointer"
                 >
                     Añadir Movimiento
                 </button>
             </div>
             <div className="mb-4">
-                <table className="w-full border-collapse border border-gray-300">
+                <table className="w-full border-collapse border border-gray-300 rounded-lg">
                     <thead>
-                    <tr>
-                        <th className="border px-4 py-2">Fecha</th>
-                        <th className="border px-4 py-2">Tipo</th>
-                        <th className="border px-4 py-2">Valor</th>
-                        <th className="border px-4 py-2">Descripción</th>
-                        <th className="border px-4 py-2">Accion</th>
+                    <tr className="bg-gray-100">
+                        <th className="border border-gray-300 px-4 py-2">Fecha</th>
+                        <th className="border border-gray-300 px-4 py-2">Tipo</th>
+                        <th className="border border-gray-300 px-4 py-2">Valor</th>
+                        <th className="border border-gray-300 px-4 py-2">Descripción</th>
+                        <th className="border border-gray-300 px-4 py-2">Acción</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {movements.map(movement => (
-                        <tr key={movement.id}>
-                            <td className="border px-4 py-2">{movement.date}</td>
-                            <td className="border px-4 py-2">{movement.type}</td>
-                            <td className="border px-4 py-2">${movement.value}</td>
-                            <td className="border px-4 py-2">{movement.description}</td>
-                            <td className="border px-4 py-2 text-center">
+                    {movements && movements.map((movement, index) => (
+                        <tr key={index}>
+                            <td className="border border-gray-300 px-4 py-2">{moment(movement.date).format('DD/MM/YYYY hh:mm a')}</td>
+                            <td className="border border-gray-300 px-4 py-2">{movement.type}</td>
+                            <td className="border border-gray-300 px-4 py-2">€ {numeral(movement.amount).format('0,0')}</td>
+                            <td className="border border-gray-300 px-4 py-2">{movement.description}</td>
+                            <td className="border border-gray-300 px-4 py-2 text-center">
                                 <button
                                     onClick={() => handleDeleteClick(movement)}
-                                    className="bg-red-500 text-white py-1 px-2 text-sm rounded hover:bg-red-600"
+                                    className="bg-red-500 text-white py-1 px-2 text-sm rounded hover:bg-red-600 cursor-pointer"
                                 >
                                     <FontAwesomeIcon icon={faTrash} className="m-auto" />
                                 </button>
@@ -110,13 +158,13 @@ const Home: FC = () => {
             <DeleteMovement
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onConfirm={handleConfirmDelete}
+                onDelete={handleConfirmDelete}
             />
 
             <div className="w-full flex justify-center">
                 <button
                     onClick={handleLogout}
-                    className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                    className="bg-red-400 text-white text-sm p-2 rounded hover:bg-red-500 cursor-pointer"
                 >
                     Cerrar Sesión
                 </button>

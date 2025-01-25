@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAuthorizationDto } from './dto/create-authorization.dto';
-import { UpdateAuthorizationDto } from './dto/update-authorization.dto';
 import { LoginAuthorizationDto } from './dto/login-authorization.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
@@ -56,19 +55,21 @@ export class AuthorizationService {
     };
   }
 
-  async findOne(id: string): Promise<User | null> {
-    return this.userModel.findById(id).select('-password').exec();
-  }
-
-  findAll() {
-    return `This action returns all authorization`;
-  }
-
-  update(id: number, _updateAuthorizationDto: UpdateAuthorizationDto) {
-    return `This action updates a #${id} authorization`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} authorization`;
+  async getUser(token: string) {
+    try {
+      const payload = this.jwtService.verify(token);
+      const userId = payload.sub;
+      const userData = await this.userModel
+        .findById(userId)
+        .select('-password')
+        .exec();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Usuario encontrado!',
+        user: userData,
+      };
+    } catch (error) {
+      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+    }
   }
 }

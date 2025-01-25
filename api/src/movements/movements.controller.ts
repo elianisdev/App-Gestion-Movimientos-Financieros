@@ -6,10 +6,12 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { MovementsService } from './movements.service';
 import { Movement } from './schemas/movements.schema';
 import { JwtAuthGuard } from '../authorization/jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('movements')
 @UseGuards(JwtAuthGuard)
@@ -17,28 +19,26 @@ export class MovementsController {
   constructor(private readonly movementsService: MovementsService) {}
 
   @Post()
-  async create(@Body() movement: Movement): Promise<Movement> {
-    return this.movementsService.create(movement);
+  async create(@Req() request: Request, @Body() movement: Movement) {
+    const token = request.headers?.authorization?.split(' ')[1] as string;
+    return this.movementsService.create(movement, token);
   }
 
   @Get()
-  async findAll(): Promise<Movement[]> {
-    return this.movementsService.findAll();
+  async getMovementsByUser(@Req() request: Request) {
+    const token = request.headers?.authorization?.split(' ')[1] as string;
+    return this.movementsService.getMovementsByUser(token);
   }
 
   @Get('/capital')
-  async getCapital(): Promise<{ capital: number }> {
-    const capital = await this.movementsService.getCapital();
-    return { capital };
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Movement | null> {
-    return this.movementsService.findOne(id);
+  async getCapital(@Req() request: Request) {
+    const token = request.headers?.authorization?.split(' ')[1] as string;
+    return await this.movementsService.getCapital(token);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<Movement | null> {
-    return this.movementsService.remove(id);
+  async remove(@Req() request: Request, @Param('id') id: string) {
+    const token = request.headers?.authorization?.split(' ')[1] as string;
+    return this.movementsService.remove(id, token);
   }
 }

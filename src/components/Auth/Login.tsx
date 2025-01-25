@@ -19,7 +19,7 @@ const Login: FC = () => {
         const response = await login( data.email, data.password );
         if (response.statusCode === 200) {
             toast(response.message, { type: "success" });
-            localStorage.setItem("user", JSON.stringify(response));
+            localStorage.setItem("access_token", response.access_token);
             navigate("/home");
         } else {
             toast("Usuario y/o contraseña incorrecto(s)", { type: "error" });
@@ -77,7 +77,7 @@ const Login: FC = () => {
                     </div>
 
                     <button
-                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm cursor-pointer"
                         type="submit"
                     >
                         Continuar
@@ -85,8 +85,8 @@ const Login: FC = () => {
                 </form>
 
                 <div className="mt-4 text-center">
-                    <Link to="/register-user" className="text-blue-500 hover:underline">
-                        ¿No tienes una cuenta? Regístrate
+                    <Link to="/register-user" className="text-blue-400 hover:underline text-sm font-light">
+                        ¿No tienes una cuenta? Regístrate aquí
                     </Link>
                 </div>
             </div>
